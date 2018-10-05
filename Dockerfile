@@ -36,13 +36,23 @@ RUN sed -i 's/FCGI_USER="www-data"/FCGI_USER="git"/g' /etc/init.d/fcgiwrap && \
     sed -i 's/FCGI_SOCKET_OWNER="www-data"/FCGI_SOCKET_OWNER="git"/g' /etc/init.d/fcgiwrap && \
     sed -i 's/FCGI_SOCKET_GROUP="www-data"/FCGI_SOCKET_GROUP="git"/g' /etc/init.d/fcgiwrap
 
+
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+RUN php composer-setup.php
+RUN php -r "unlink('composer-setup.php');"
+RUN mv composer.phar /usr/bin/composer
+
 # Install gitlist
 RUN mkdir -p /var/www && \
-    wget -q -O /var/www/gitlist-0.5.0.tar.gz https://s3.amazonaws.com/gitlist/gitlist-0.5.0.tar.gz && \
-    tar -zxvf /var/www/gitlist-0.5.0.tar.gz -C /var/www && \
+    wget -q -O /var/www/gitlist-1.0.1.tar.gz https://github.com/klaussilveira/gitlist/releases/download/1.0.1/gitlist-1.0.1.tar.gz && \
+    tar -zxvf /var/www/gitlist-1.0.1.tar.gz -C /var/www && \
     chmod -R 777 /var/www/gitlist && \
     mkdir -p /var/www/gitlist/cache && \
     chmod 777 /var/www/gitlist/cache
+
+
+#RUN composer install -d=/var/www/gitlist/
+
 
 # Create config files for container startup and nginx
 COPY nginx.conf /etc/nginx/nginx.conf
