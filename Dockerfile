@@ -19,7 +19,11 @@ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selectio
 # Update, Install Prerequisites, Clean Up APT
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y update && \
     apt-get -y install git wget nginx-full php5-fpm fcgiwrap apache2-utils && \
+    apt-get -y install php5-curl php5-zmq && \
+    apt-get -y install vim npm 
     apt-get clean
+
+RUN ln -s /usr/bin/nodejs /usr/bin/node
 
 # Setup Container User
 RUN useradd -M -s /bin/false git --uid 1000
